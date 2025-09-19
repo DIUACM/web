@@ -8,70 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { humanizeContestType } from "@/components/contests/contest-card";
-
-type ContestTeamMember = {
-  name: string;
-  username: string;
-  student_id: string | null;
-  department: string | null;
-  profile_picture: string;
-};
-
-type ContestTeam = {
-  id: number;
-  name: string;
-  rank: number | null;
-  solve_count: number | null;
-  members: ContestTeamMember[];
-};
-
-type ContestDetail = {
-  id: number;
-  name: string;
-  contest_type: string;
-  location: string | null;
-  date: string | null;
-  description: string | null;
-  standings_url: string | null;
-  gallery: { title: string; slug: string; cover_image: string } | null;
-  teams: ContestTeam[];
-};
-
-type GalleryDetail = {
-  title: string;
-  slug: string;
-  description: string | null;
-  media: { url: string }[];
-};
-
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchContest(id: number | string): Promise<{ data: ContestDetail }> {
-  const url = new URL(`/api/contests/${id}`, API_BASE_URL);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) throw new Error("NOT_FOUND");
-  if (!res.ok) throw new Error(`Failed to fetch contest: ${res.status}`);
-  return res.json();
-}
-
-async function fetchGallery(slug: string): Promise<{ data: GalleryDetail }> {
-  const url = new URL(`/api/galleries/${slug}`, API_BASE_URL);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) throw new Error("NOT_FOUND");
-  if (!res.ok) throw new Error(`Failed to fetch gallery: ${res.status}`);
-  return res.json();
-}
+import { getContest, type ContestDetail } from "@/lib/api/services/contests";
+import { getGallery, type GalleryDetail } from "@/lib/api/services/galleries";
+import { HttpError } from "@/lib/api/http";
 
 type Params = { id: string };
 
@@ -80,17 +19,17 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
   let data;
   let galleryMedia: { url: string }[] | null = null;
   try {
-    ({ data } = await fetchContest(id));
+    ({ data } = await getContest(id));
     if (data.gallery?.slug) {
       try {
-        const { data: g } = await fetchGallery(data.gallery.slug);
+        const { data: g } = await getGallery(data.gallery.slug);
         galleryMedia = g.media || [];
       } catch {
         galleryMedia = null;
       }
     }
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 
@@ -106,7 +45,7 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
 
   const stats = (() => {
     const teamCount = data.teams?.length || 0;
-    const bestRank = data.teams.reduce((min, t) => (t.rank != null ? Math.min(min, t.rank) : min), Infinity);
+    const bestRank = data.teams.reduce((min: number, t) => (t.rank != null ? Math.min(min, t.rank) : min), Infinity);
     const bestRankVal = Number.isFinite(bestRank) ? bestRank : null;
     return { teamCount, bestRank: bestRankVal };
   })();
