@@ -1,5 +1,5 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { ProgrammerCard, ProgrammerListItem } from "@/components/programmers/programmer-card";
+import { ProgrammerCard } from "@/components/programmers/programmer-card";
 import { ProgrammersSearch } from "./components/search";
 import { getProgrammers } from "@/lib/api/services/programmers";
 

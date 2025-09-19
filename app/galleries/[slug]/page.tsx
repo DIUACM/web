@@ -4,12 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Images } from "lucide-react";
 import { GalleryGrid } from "@/components/galleries/gallery-grid";
 
-type GalleryDetail = {
-  title: string;
-  slug: string;
-  description: string | null;
-  media: { url: string }[];
-};
+// Types sourced from services
 
 import { getGallery } from "@/lib/api/services/galleries";
 

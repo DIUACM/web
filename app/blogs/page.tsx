@@ -1,5 +1,5 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { BlogCard, BlogPostListItem } from "@/components/blogs/blog-card";
+import { BlogCard } from "@/components/blogs/blog-card";
 import { getBlogPosts } from "@/lib/api/services/blogs";
 import { BookOpen } from "lucide-react";
 

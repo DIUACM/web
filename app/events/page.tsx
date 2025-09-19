@@ -1,5 +1,5 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { EventCard, EventListItem } from "@/components/events/event-card";
+import { EventCard } from "@/components/events/event-card";
 import { EventsFilters } from "@/components/events/events-filters";
 import { getEvents } from "@/lib/api/services/events";
 

@@ -1,6 +1,6 @@
 import { CustomPagination } from "@/components/custom-pagination";
 import { Trophy } from "lucide-react";
-import { ContestCard, ContestListItem } from "@/components/contests/contest-card";
+import { ContestCard } from "@/components/contests/contest-card";
 import { getContests } from "@/lib/api/services/contests";
 
 // Data fetching is handled via service with caching/tags

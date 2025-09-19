@@ -6,42 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, BarChart3, Info, Shield, TrendingUp, Users } from "lucide-react";
 
-type TrackerEvent = {
-  id: number;
-  title: string;
-  starting_at: string;
-  strict_attendance?: boolean;
-};
-
-type TrackerUserEventStats = {
-  event_id: number;
-  solve_count: number;
-  upsolve_count: number;
-  participation: boolean;
-};
-
-type TrackerUser = {
-  name: string;
-  username: string;
-  student_id: string;
-  department: string;
-  profile_picture: string;
-  score: number;
-  event_stats: Record<string, TrackerUserEventStats | null>;
-};
-
-type TrackerDetail = {
-  title: string;
-  slug: string;
-  description: string;
-  rank_lists: { keyword: string }[];
-  selected_rank_list: {
-    keyword: string;
-    consider_strict_attendance: boolean;
-    events: TrackerEvent[];
-    users: TrackerUser[];
-  };
-};
+// Types sourced from services
 
 import { getTracker } from "@/lib/api/services/trackers";
 

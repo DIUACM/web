@@ -10,40 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
 import { getEvent } from "@/lib/api/services/events";
 
-type EventUserStats = {
-  name: string;
-  username: string;
-  student_id: string;
-  department: string;
-  profile_picture: string;
-  solve_count: number;
-  upsolve_count: number;
-  participation: boolean;
-};
-
-type EventAttendee = {
-  name: string;
-  username: string;
-  student_id: string;
-  department: string;
-  profile_picture: string;
-  attendance_time: string;
-};
-
-type EventDetail = {
-  id: number;
-  title: string;
-  description?: string;
-  type: string;
-  status: string;
-  starting_at: string;
-  ending_at: string;
-  participation_scope: string;
-  event_link?: string;
-  open_for_attendance?: boolean;
-  user_stats?: EventUserStats[];
-  attendees?: EventAttendee[];
-};
+// Types sourced from services
 
 // Fetching handled via service with caching/tags
 

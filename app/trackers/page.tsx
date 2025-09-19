@@ -1,4 +1,4 @@
-import { TrackerCard, TrackerListItem } from "@/components/trackers/tracker-card";
+import { TrackerCard } from "@/components/trackers/tracker-card";
 import { CustomPagination } from "@/components/custom-pagination";
 import { getTrackers } from "@/lib/api/services/trackers";
 

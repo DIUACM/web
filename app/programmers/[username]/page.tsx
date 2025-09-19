@@ -9,51 +9,7 @@ import { ArrowLeft, Calendar, GraduationCap, MapPin, Target, Trophy, Users } fro
 import { CopyButton } from "@/components/programmers/copy-button";
 import { getProgrammer } from "@/lib/api/services/programmers";
 
-type ContestMember = {
-  name: string;
-  username: string;
-  student_id: string | null;
-  department: string | null;
-  profile_picture: string;
-};
-
-type ProgrammerContest = {
-  id: number;
-  name: string;
-  date: string; // ISO
-  team_name: string;
-  rank: number | null;
-  solve_count: number | null;
-  members: ContestMember[];
-};
-
-type TrackerRanklistPerformance = {
-  keyword: string;
-  total_users: number;
-  events_count: number;
-  user_score: number;
-  user_position: number;
-};
-
-type TrackerPerformance = {
-  title: string;
-  slug: string;
-  ranklists: TrackerRanklistPerformance[];
-};
-
-type ProgrammerDetail = {
-  name: string;
-  username: string;
-  student_id: string | null;
-  department: string | null;
-  profile_picture: string;
-  max_cf_rating: number | null;
-  codeforces_handle: string | null;
-  atcoder_handle: string | null;
-  vjudge_handle: string | null;
-  contests: ProgrammerContest[];
-  tracker_performance: TrackerPerformance[];
-};
+// Types sourced from services
 
 // Fetching handled via service with caching/tags
 

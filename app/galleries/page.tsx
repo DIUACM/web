@@ -1,5 +1,5 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { GalleryCard, GalleryListItem } from "@/components/galleries/gallery-card";
+import { GalleryCard } from "@/components/galleries/gallery-card";
 import { Images } from "lucide-react";
 import { getGalleries } from "@/lib/api/services/galleries";
 
