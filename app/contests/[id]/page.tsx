@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { humanizeContestType } from "@/components/contests/contest-card";
-import { getContest, type ContestDetail } from "@/lib/api/services/contests";
-import { getGallery, type GalleryDetail } from "@/lib/api/services/galleries";
+import { getContest } from "@/lib/api/services/contests";
+import { getGallery } from "@/lib/api/services/galleries";
 import { HttpError } from "@/lib/api/http";
 
 type Params = { id: string };
