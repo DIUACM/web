@@ -1,7 +1,44 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { GalleryCard } from "@/components/galleries/gallery-card";
-import { fetchGalleries } from "@/lib/api/galleries";
+import { GalleryCard, GalleryListItem } from "@/components/galleries/gallery-card";
 import { Images } from "lucide-react";
+
+type Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
+type Meta = {
+  current_page: number;
+  from: number | null;
+  last_page: number;
+  per_page: number;
+  to: number | null;
+  total: number;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
+  links: Links;
+  meta: Meta;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchGalleries(params: { page?: number }): Promise<PaginatedResponse<GalleryListItem>> {
+  const url = new URL("/api/galleries", API_BASE_URL);
+  if (params.page) url.searchParams.set("page", String(params.page));
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to fetch galleries: ${res.status}`);
+  return res.json();
+}
 
 type RawSearchParams = Record<string, string | string[] | undefined> & {
   page?: string;

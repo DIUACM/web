@@ -1,9 +1,31 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { fetchGallery } from "@/lib/api/galleries";
 import { ArrowLeft, Images } from "lucide-react";
 import { GalleryGrid } from "@/components/galleries/gallery-grid";
+
+type GalleryDetail = {
+  title: string;
+  slug: string;
+  description: string | null;
+  media: { url: string }[];
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchGallery(slug: string): Promise<{ data: GalleryDetail }> {
+  const url = new URL(`/api/galleries/${slug}`, API_BASE_URL);
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (res.status === 404) throw new Error("NOT_FOUND");
+  if (!res.ok) throw new Error(`Failed to fetch gallery: ${res.status}`);
+  return res.json();
+}
 
 type Params = { slug: string };
 
@@ -12,8 +34,8 @@ export default async function GalleryDetailsPage({ params }: { params: Promise<P
   let data;
   try {
     ({ data } = await fetchGallery(slug));
-  } catch (e: any) {
-    if (e?.message === "NOT_FOUND") return notFound();
+  } catch (e: unknown) {
+    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
   }
 

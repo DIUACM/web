@@ -8,7 +8,23 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { BlogPostListItem, formatPublishedAt } from "@/lib/api/blogs";
+
+export type BlogPostListItem = {
+  title: string;
+  slug: string;
+  published_at: string;
+  author: string;
+  featured_image: string;
+};
+
+export function formatPublishedAt(iso: string) {
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  }).format(d);
+}
 
 export function BlogCard({ post }: { post: BlogPostListItem }) {
   const [isLoading, setIsLoading] = useState(true);

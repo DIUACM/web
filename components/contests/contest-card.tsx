@@ -2,7 +2,42 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, MapPin, Medal } from "lucide-react";
-import { ContestListItem, formatContestDate, humanizeContestType } from "@/lib/api/contests";
+
+export type ContestListItem = {
+  id: number;
+  name: string;
+  contest_type: string;
+  location: string | null;
+  date: string | null;
+  best_rank: number | null;
+};
+
+export function formatContestDate(iso?: string | null) {
+  if (!iso) return "TBD";
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
+
+export function humanizeContestType(v?: string) {
+  switch (v) {
+    case "icpc_regional":
+      return "ICPC Regional";
+    case "icpc_asia_west":
+      return "ICPC Asia West";
+    case "iupc":
+      return "IUPC";
+    case "other":
+      return "Other";
+    default:
+      return v || "";
+  }
+}
 
 export function ContestCard({ item }: { item: ContestListItem }) {
   return (

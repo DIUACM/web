@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, ListOrdered } from "lucide-react";
-import { TrackerListItem } from "@/lib/api/trackers";
+
+export type TrackerListItem = {
+  title: string;
+  slug: string;
+  description: string;
+};
 
 export function TrackerCard({ tracker }: { tracker: TrackerListItem }) {
   return (

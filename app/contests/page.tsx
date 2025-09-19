@@ -1,7 +1,44 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { fetchContests } from "@/lib/api/contests";
 import { Trophy } from "lucide-react";
-import { ContestCard } from "@/components/contests/contest-card";
+import { ContestCard, ContestListItem } from "@/components/contests/contest-card";
+
+type Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
+type Meta = {
+  current_page: number;
+  from: number | null;
+  last_page: number;
+  per_page: number;
+  to: number | null;
+  total: number;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
+  links: Links;
+  meta: Meta;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchContests(params: { page?: number }): Promise<PaginatedResponse<ContestListItem>> {
+  const url = new URL("/api/contests", API_BASE_URL);
+  if (params.page) url.searchParams.set("page", String(params.page));
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to fetch contests: ${res.status}`);
+  return res.json();
+}
 
 type RawSearchParams = Record<string, string | string[] | undefined> & {
   page?: string;

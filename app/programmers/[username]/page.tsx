@@ -6,8 +6,81 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, GraduationCap, MapPin, Target, Trophy, Users } from "lucide-react";
-import { fetchProgrammer, formatContestDate } from "@/lib/api/programmers";
 import { CopyButton } from "@/components/programmers/copy-button";
+
+type ContestMember = {
+  name: string;
+  username: string;
+  student_id: string | null;
+  department: string | null;
+  profile_picture: string;
+};
+
+type ProgrammerContest = {
+  id: number;
+  name: string;
+  date: string; // ISO
+  team_name: string;
+  rank: number | null;
+  solve_count: number | null;
+  members: ContestMember[];
+};
+
+type TrackerRanklistPerformance = {
+  keyword: string;
+  total_users: number;
+  events_count: number;
+  user_score: number;
+  user_position: number;
+};
+
+type TrackerPerformance = {
+  title: string;
+  slug: string;
+  ranklists: TrackerRanklistPerformance[];
+};
+
+type ProgrammerDetail = {
+  name: string;
+  username: string;
+  student_id: string | null;
+  department: string | null;
+  profile_picture: string;
+  max_cf_rating: number | null;
+  codeforces_handle: string | null;
+  atcoder_handle: string | null;
+  vjudge_handle: string | null;
+  contests: ProgrammerContest[];
+  tracker_performance: TrackerPerformance[];
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchProgrammer(username: string): Promise<{ data: ProgrammerDetail }> {
+  const url = new URL(`/api/programmers/${username}`, API_BASE_URL);
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (res.status === 404) throw new Error("NOT_FOUND");
+  if (!res.ok) throw new Error(`Failed to fetch programmer: ${res.status}`);
+  return res.json();
+}
+
+function formatContestDate(iso: string) {
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
 
 type Params = { username: string };
 
@@ -37,8 +110,8 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
   let data;
   try {
     ({ data } = await fetchProgrammer(username));
-  } catch (e: any) {
-    if (e?.message === "NOT_FOUND") return notFound();
+  } catch (e: unknown) {
+    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
   }
 

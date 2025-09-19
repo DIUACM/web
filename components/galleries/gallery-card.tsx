@@ -7,7 +7,13 @@ import { Images } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { GalleryListItem } from "@/lib/api/galleries";
+
+export type GalleryListItem = {
+  title: string;
+  slug: string;
+  cover_image: string;
+  media_count: number;
+};
 
 export function GalleryCard({ item }: { item: GalleryListItem }) {
   const [isLoading, setIsLoading] = useState(true);

@@ -1,7 +1,44 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { BlogCard } from "@/components/blogs/blog-card";
-import { fetchBlogPosts } from "@/lib/api/blogs";
+import { BlogCard, BlogPostListItem } from "@/components/blogs/blog-card";
 import { BookOpen } from "lucide-react";
+
+type Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
+type Meta = {
+  current_page: number;
+  from: number | null;
+  last_page: number;
+  per_page: number;
+  to: number | null;
+  total: number;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
+  links: Links;
+  meta: Meta;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchBlogPosts(params: { page?: number }): Promise<PaginatedResponse<BlogPostListItem>> {
+  const url = new URL("/api/blog-posts", API_BASE_URL);
+  if (params.page) url.searchParams.set("page", String(params.page));
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to fetch blog posts: ${res.status}`);
+  return res.json();
+}
 
 type SearchParams = {
   page?: string;

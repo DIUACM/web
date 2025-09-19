@@ -2,7 +2,15 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ProgrammerListItem } from "@/lib/api/programmers";
+
+export type ProgrammerListItem = {
+  name: string;
+  username: string;
+  student_id: string | null;
+  department: string | null;
+  profile_picture: string;
+  max_cf_rating: number | null;
+};
 
 function getCfRankClass(rating: number | null | undefined) {
   if (rating == null) return "text-slate-500";

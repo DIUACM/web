@@ -1,7 +1,45 @@
 import { CustomPagination } from "@/components/custom-pagination";
-import { ProgrammerCard } from "@/components/programmers/programmer-card";
-import { fetchProgrammers } from "@/lib/api/programmers";
+import { ProgrammerCard, ProgrammerListItem } from "@/components/programmers/programmer-card";
 import { ProgrammersSearch } from "./components/search";
+
+type Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
+type Meta = {
+  current_page: number;
+  from: number | null;
+  last_page: number;
+  per_page: number;
+  to: number | null;
+  total: number;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
+  links: Links;
+  meta: Meta;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchProgrammers(params: { search?: string; page?: number }): Promise<PaginatedResponse<ProgrammerListItem>> {
+  const url = new URL("/api/programmers", API_BASE_URL);
+  if (params.search) url.searchParams.set("search", params.search);
+  if (params.page) url.searchParams.set("page", String(params.page));
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to fetch programmers: ${res.status}`);
+  return res.json();
+}
 
 type SearchParams = {
   search?: string;

@@ -4,8 +4,61 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { fetchTracker } from "@/lib/api/trackers";
 import { ArrowLeft, BarChart3, Info, Shield, TrendingUp, Users } from "lucide-react";
+
+type TrackerEvent = {
+  id: number;
+  title: string;
+  starting_at: string;
+  strict_attendance?: boolean;
+};
+
+type TrackerUserEventStats = {
+  event_id: number;
+  solve_count: number;
+  upsolve_count: number;
+  participation: boolean;
+};
+
+type TrackerUser = {
+  name: string;
+  username: string;
+  student_id: string;
+  department: string;
+  profile_picture: string;
+  score: number;
+  event_stats: Record<string, TrackerUserEventStats | null>;
+};
+
+type TrackerDetail = {
+  title: string;
+  slug: string;
+  description: string;
+  rank_lists: { keyword: string }[];
+  selected_rank_list: {
+    keyword: string;
+    consider_strict_attendance: boolean;
+    events: TrackerEvent[];
+    users: TrackerUser[];
+  };
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchTracker(slug: string, keyword?: string): Promise<{ data: TrackerDetail }> {
+  const url = new URL(`/api/trackers/${slug}`, API_BASE_URL);
+  if (keyword) url.searchParams.set("keyword", keyword);
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (res.status === 404) throw new Error("NOT_FOUND");
+  if (!res.ok) throw new Error(`Failed to fetch tracker: ${res.status}`);
+  return res.json();
+}
 
 type Params = { slug: string };
 
@@ -22,8 +75,8 @@ export default async function TrackerDetailsPage({ params, searchParams }: { par
   let data;
   try {
     ({ data } = await fetchTracker(slug, keyword));
-  } catch (e: any) {
-    if (e?.message === "NOT_FOUND") return notFound();
+  } catch (e: unknown) {
+    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
   }
 
@@ -195,8 +248,7 @@ export default async function TrackerDetailsPage({ params, searchParams }: { par
                 <p>• Scores are calculated based on solve performance and upsolve counts</p>
                 <p>• Rankings are sorted by total score in descending order</p>
                 {rank.consider_strict_attendance && (
-                  <p>
-                    • <span className="font-medium text-orange-600 dark:text-orange-400">Strict Attendance:</span> Events marked with "SA" require
+                  <p>• <span className="font-medium text-orange-600 dark:text-orange-400">Strict Attendance:</span> Events marked with &ldquo;SA&rdquo; require
                     attendance. Users without attendance will have their solves counted as upsolves only.
                   </p>
                 )}

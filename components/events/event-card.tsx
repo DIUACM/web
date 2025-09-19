@@ -2,7 +2,69 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
-import { EventListItem, formatDateRange, humanizeScope, humanizeType } from "@/lib/api/events";
+
+export type EventListItem = {
+  id: number;
+  title: string;
+  starting_at: string;
+  ending_at: string;
+  participation_scope: string;
+  event_type: string;
+  attendance_count?: number;
+};
+
+export function formatDateRange(startIso: string, endIso: string) {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  const sameDay =
+    start.getFullYear() === end.getFullYear() &&
+    start.getMonth() === end.getMonth() &&
+    start.getDate() === end.getDate();
+
+  const dateFmt = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+  const timeFmt = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  if (sameDay) {
+    return `${dateFmt.format(start)} • ${timeFmt.format(start)} - ${timeFmt.format(end)}`;
+  }
+  return `${dateFmt.format(start)} ${timeFmt.format(start)} - ${dateFmt.format(end)} ${dateFmt.format(end)}`;
+}
+
+export function humanizeType(v?: string) {
+  switch (v) {
+    case "contest":
+      return "Contest";
+    case "class":
+      return "Class";
+    case "other":
+      return "Other";
+    default:
+      return v || "";
+  }
+}
+
+export function humanizeScope(v?: string) {
+  switch (v) {
+    case "open_for_all":
+      return "Open for All";
+    case "only_girls":
+      return "Only Girls";
+    case "junior_programmers":
+      return "Junior Programmers";
+    case "selected_persons":
+      return "Selected Persons";
+    default:
+      return v || "";
+  }
+}
 
 type Props = {
   event: EventListItem;

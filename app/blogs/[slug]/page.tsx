@@ -2,8 +2,34 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchBlogPost, formatPublishedAt } from "@/lib/api/blogs";
 import { Separator } from "@/components/ui/separator";
+import { formatPublishedAt } from "@/components/blogs/blog-card";
+
+type BlogPostDetail = {
+  title: string;
+  slug: string;
+  content: string; // HTML
+  published_at: string;
+  is_featured: boolean;
+  author: string;
+  featured_image: string;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchBlogPost(slug: string): Promise<{ data: BlogPostDetail }> {
+  const url = new URL(`/api/blog-posts/${slug}`, API_BASE_URL);
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (res.status === 404) throw new Error("NOT_FOUND");
+  if (!res.ok) throw new Error(`Failed to fetch blog post: ${res.status}`);
+  return res.json();
+}
 
 type Params = { slug: string };
 
@@ -12,8 +38,8 @@ export default async function BlogDetailsPage({ params }: { params: Promise<Para
   let data;
   try {
     ({ data } = await fetchBlogPost(slug));
-  } catch (e: any) {
-    if (e?.message === "NOT_FOUND") return notFound();
+  } catch (e: unknown) {
+    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
   }
 

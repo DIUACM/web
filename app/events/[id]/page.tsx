@@ -4,10 +4,88 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, ExternalLink, ArrowLeft } from "lucide-react";
-import { fetchEvent, formatDateRange, humanizeScope, humanizeStatus, humanizeType, formatTime } from "@/lib/api/events";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
+
+type EventUserStats = {
+  name: string;
+  username: string;
+  student_id: string;
+  department: string;
+  profile_picture: string;
+  solve_count: number;
+  upsolve_count: number;
+  participation: boolean;
+};
+
+type EventAttendee = {
+  name: string;
+  username: string;
+  student_id: string;
+  department: string;
+  profile_picture: string;
+  attendance_time: string;
+};
+
+type EventDetail = {
+  id: number;
+  title: string;
+  description?: string;
+  type: string;
+  status: string;
+  starting_at: string;
+  ending_at: string;
+  participation_scope: string;
+  event_link?: string;
+  open_for_attendance?: boolean;
+  user_stats?: EventUserStats[];
+  attendees?: EventAttendee[];
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchEvent(id: number | string): Promise<{ data: EventDetail }> {
+  const url = new URL(`/api/events/${id}`, API_BASE_URL);
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (res.status === 404) {
+    throw new Error("NOT_FOUND");
+  }
+  if (!res.ok) {
+    throw new Error(`Failed to fetch event: ${res.status}`);
+  }
+  return res.json();
+}
+
+function humanizeStatus(v?: string) {
+  switch (v) {
+    case "published":
+      return "Published";
+    case "draft":
+      return "Draft";
+    case "archived":
+      return "Archived";
+    default:
+      return v || "";
+  }
+}
+
+function formatTime(iso: string) {
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(d);
+}
 
 type Params = { id: string };
 
@@ -16,8 +94,8 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
   let data;
   try {
     ({ data } = await fetchEvent(id));
-  } catch (e: any) {
-    if (e?.message === "NOT_FOUND") return notFound();
+  } catch (e: unknown) {
+    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
   }
 
@@ -113,7 +191,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data.user_stats.map((u: any, idx: number) => (
+                      {data.user_stats.map((u, idx: number) => (
                         <TableRow key={idx}>
                           <TableCell>
                             <div className="flex items-center gap-2">
@@ -154,7 +232,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data.attendees.map((u: any, idx: number) => (
+                      {data.attendees.map((u, idx: number) => (
                         <TableRow key={idx}>
                           <TableCell>
                             <div className="flex items-center gap-2">

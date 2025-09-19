@@ -1,6 +1,43 @@
-import { TrackerCard } from "@/components/trackers/tracker-card";
+import { TrackerCard, TrackerListItem } from "@/components/trackers/tracker-card";
 import { CustomPagination } from "@/components/custom-pagination";
-import { fetchTrackers } from "@/lib/api/trackers";
+
+type Links = {
+  first: string | null;
+  last: string | null;
+  prev: string | null;
+  next: string | null;
+};
+
+type Meta = {
+  current_page: number;
+  from: number | null;
+  last_page: number;
+  per_page: number;
+  to: number | null;
+  total: number;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
+  links: Links;
+  meta: Meta;
+};
+
+const DEFAULT_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
+
+async function fetchTrackers(params: { page?: number }): Promise<PaginatedResponse<TrackerListItem>> {
+  const url = new URL("/api/trackers", API_BASE_URL);
+  if (params.page) url.searchParams.set("page", String(params.page));
+  const res = await fetch(url.toString(), { 
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
+  if (!res.ok) throw new Error(`Failed to fetch trackers: ${res.status}`);
+  return res.json();
+}
 
 type RawSearchParams = Record<string, string | string[] | undefined> & {
   page?: string;
