@@ -1,12 +1,39 @@
 # Profile API Documentation
 
-This document describes the authenticated endpoints for updating a user's profile and uploading a profile picture.
+This document describes the authenticated endpoints for fetching the authenticated profile, updating a user's profile, and uploading a profile picture.
 
 ## Authentication
 - All endpoints require Sanctum authentication.
 - Include a valid bearer token: `Authorization: Bearer <token>`.
 
 ## Endpoints
+
+### Get Profile
+
+- Method: GET
+- URL: `/api/profile`
+- Auth: Required (Sanctum)
+
+Example Response
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "username": "janedoe",
+    "gender": "female",
+    "phone": "+8801XXXXXXXXX",
+    "codeforces_handle": null,
+    "atcoder_handle": null,
+    "vjudge_handle": null,
+    "department": "CSE",
+    "student_id": null,
+    "max_cf_rating": 1650,
+    "profile_picture": "https://.../path/to/original.jpg"
+  }
+}
+```
 
 ### Update Profile
 
