@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "8000" },
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "localhost" },
+      { protocol: "https", hostname: "pub-15f222a0e56543078803204afc924060.r2.dev" },
       { protocol: "https", hostname: "example.com" },
       { protocol: "https", hostname: "*.example.com" as any },
     ],
