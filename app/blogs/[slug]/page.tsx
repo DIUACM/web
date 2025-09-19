@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { fetchBlogPost, formatPublishedAt } from "@/lib/api/blogs";
 import { Separator } from "@/components/ui/separator";
 

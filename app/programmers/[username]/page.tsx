@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, GraduationCap, MapPin, Target, Trophy, Users } from "lucide-react";
 import { fetchProgrammer, formatContestDate } from "@/lib/api/programmers";
