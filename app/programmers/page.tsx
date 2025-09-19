@@ -30,14 +30,17 @@ export default async function ProgrammersPage({ searchParams }: { searchParams: 
         <ProgrammersSearch initialSearch={get(sp.search) || ""} />
       </div>
 
-      <div className="mt-6 space-y-4">
-        {data.length === 0 && (
+      {data.length === 0 ? (
+        <div className="mt-6">
           <p className="text-slate-500">No programmers found.</p>
-        )}
-        {data.map((u) => (
-          <ProgrammerCard key={u.username} user={u} />
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((u) => (
+            <ProgrammerCard key={u.username} user={u} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-8 flex justify-center">
         <CustomPagination currentPage={meta.current_page} totalPages={meta.last_page} />
