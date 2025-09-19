@@ -171,9 +171,7 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
                 key={tracker.slug}
                 className="relative bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 transition-all overflow-hidden group hover:shadow-lg"
               >
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 rounded-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300 -z-10"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-slate-50 dark:from-slate-800 dark:to-slate-900 opacity-50 -z-10"></div>
-                <div className="absolute -bottom-10 -right-10 h-24 w-24 rounded-full bg-purple-100/40 dark:bg-purple-900/20 -z-10"></div>
+                
 
                 <div className="p-5 relative z-10">
                   <div className="mb-4">
@@ -185,7 +183,7 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
                       <Link
                         key={rankList.keyword}
                         href={`/trackers/${tracker.slug}?keyword=${encodeURIComponent(rankList.keyword)}`}
-                        className="block p-4 rounded-lg bg-slate-50/50 dark:bg-slate-800/30 hover:bg-slate-100/80 dark:hover:bg-slate-700/50 transition-colors border border-slate-200/60 dark:border-slate-600/40 backdrop-blur-sm"
+                        className="block p-4 rounded-lg bg-slate-50/50 dark:bg-slate-800/30 hover:bg-slate-100/80 dark:hover:bg-slate-700/50 transition-colors border border-slate-200/60 dark:border-slate-600/40"
                       >
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="font-medium text-slate-900 dark:text-white">{rankList.keyword}</h4>
