@@ -3,7 +3,7 @@ import { API_BASE_URL } from "./events";
 export type TrackerListItem = {
   title: string;
   slug: string;
-  description?: string;
+  description: string;
 };
 
 type Links = {
@@ -47,7 +47,7 @@ export type TrackerUser = {
   username: string;
   student_id: string;
   department: string;
-  profile_picture?: string;
+  profile_picture: string;
   score: number;
   event_stats: Record<string, TrackerUserEventStats | null>;
 };
@@ -55,7 +55,7 @@ export type TrackerUser = {
 export type TrackerDetail = {
   title: string;
   slug: string;
-  description?: string;
+  description: string;
   rank_lists: { keyword: string }[];
   selected_rank_list: {
     keyword: string;

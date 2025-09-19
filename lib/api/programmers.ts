@@ -5,7 +5,7 @@ export type ProgrammerListItem = {
   username: string;
   student_id: string | null;
   department: string | null;
-  profile_picture?: string;
+  profile_picture: string;
   max_cf_rating: number | null;
 };
 
@@ -36,7 +36,7 @@ export type ContestMember = {
   username: string;
   student_id: string | null;
   department: string | null;
-  profile_picture?: string;
+  profile_picture: string;
 };
 
 export type ProgrammerContest = {
@@ -68,11 +68,11 @@ export type ProgrammerDetail = {
   username: string;
   student_id: string | null;
   department: string | null;
-  profile_picture?: string;
+  profile_picture: string;
   max_cf_rating: number | null;
-  codeforces_handle?: string | null;
-  atcoder_handle?: string | null;
-  vjudge_handle?: string | null;
+  codeforces_handle: string | null;
+  atcoder_handle: string | null;
+  vjudge_handle: string | null;
   contests: ProgrammerContest[];
   tracker_performance: TrackerPerformance[];
 };

@@ -8,6 +8,26 @@ export type EventListItem = {
   attendance_count?: number;
 };
 
+export type EventUserStats = {
+  name: string;
+  username: string;
+  student_id: string;
+  department: string;
+  profile_picture: string;
+  solve_count: number;
+  upsolve_count: number;
+  participation: boolean;
+};
+
+export type EventAttendee = {
+  name: string;
+  username: string;
+  student_id: string;
+  department: string;
+  profile_picture: string;
+  attendance_time: string;
+};
+
 export type EventDetail = {
   id: number;
   title: string;
@@ -19,8 +39,8 @@ export type EventDetail = {
   participation_scope: string;
   event_link?: string;
   open_for_attendance?: boolean;
-  user_stats?: any[];
-  attendees?: any[];
+  user_stats?: EventUserStats[];
+  attendees?: EventAttendee[];
 };
 
 type Links = {
