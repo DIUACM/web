@@ -1,44 +1,9 @@
 import { CustomPagination } from "@/components/custom-pagination";
 import { Trophy } from "lucide-react";
 import { ContestCard, ContestListItem } from "@/components/contests/contest-card";
+import { getContests } from "@/lib/api/services/contests";
 
-type Links = {
-  first: string | null;
-  last: string | null;
-  prev: string | null;
-  next: string | null;
-};
-
-type Meta = {
-  current_page: number;
-  from: number | null;
-  last_page: number;
-  per_page: number;
-  to: number | null;
-  total: number;
-};
-
-type PaginatedResponse<T> = {
-  data: T[];
-  links: Links;
-  meta: Meta;
-};
-
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchContests(params: { page?: number }): Promise<PaginatedResponse<ContestListItem>> {
-  const url = new URL("/api/contests", API_BASE_URL);
-  if (params.page) url.searchParams.set("page", String(params.page));
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (!res.ok) throw new Error(`Failed to fetch contests: ${res.status}`);
-  return res.json();
-}
+// Data fetching is handled via service with caching/tags
 
 type RawSearchParams = Record<string, string | string[] | undefined> & {
   page?: string;
@@ -49,7 +14,7 @@ export default async function ContestsPage({ searchParams }: { searchParams: Pro
   const get = (v?: string | string[]) => (Array.isArray(v) ? v[0] : v);
   const page = Number(get(sp.page) || 1);
 
-  const { data, meta } = await fetchContests({ page });
+  const { data, meta } = await getContests({ page });
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">

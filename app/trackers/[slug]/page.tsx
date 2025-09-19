@@ -43,22 +43,7 @@ type TrackerDetail = {
   };
 };
 
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchTracker(slug: string, keyword?: string): Promise<{ data: TrackerDetail }> {
-  const url = new URL(`/api/trackers/${slug}`, API_BASE_URL);
-  if (keyword) url.searchParams.set("keyword", keyword);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) throw new Error("NOT_FOUND");
-  if (!res.ok) throw new Error(`Failed to fetch tracker: ${res.status}`);
-  return res.json();
-}
+import { getTracker } from "@/lib/api/services/trackers";
 
 type Params = { slug: string };
 
@@ -74,7 +59,7 @@ export default async function TrackerDetailsPage({ params, searchParams }: { par
 
   let data;
   try {
-    ({ data } = await fetchTracker(slug, keyword));
+    ({ data } = await getTracker(slug, keyword));
   } catch (e: unknown) {
     if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;

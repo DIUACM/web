@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
+import { getEvent } from "@/lib/api/services/events";
 
 type EventUserStats = {
   name: string;
@@ -44,25 +45,7 @@ type EventDetail = {
   attendees?: EventAttendee[];
 };
 
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchEvent(id: number | string): Promise<{ data: EventDetail }> {
-  const url = new URL(`/api/events/${id}`, API_BASE_URL);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) {
-    throw new Error("NOT_FOUND");
-  }
-  if (!res.ok) {
-    throw new Error(`Failed to fetch event: ${res.status}`);
-  }
-  return res.json();
-}
+// Fetching handled via service with caching/tags
 
 function humanizeStatus(v?: string) {
   switch (v) {
@@ -93,7 +76,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
   const { id } = await params;
   let data;
   try {
-    ({ data } = await fetchEvent(id));
+    ({ data } = await getEvent(id));
   } catch (e: unknown) {
     if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;

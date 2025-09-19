@@ -11,21 +11,7 @@ type GalleryDetail = {
   media: { url: string }[];
 };
 
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchGallery(slug: string): Promise<{ data: GalleryDetail }> {
-  const url = new URL(`/api/galleries/${slug}`, API_BASE_URL);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) throw new Error("NOT_FOUND");
-  if (!res.ok) throw new Error(`Failed to fetch gallery: ${res.status}`);
-  return res.json();
-}
+import { getGallery } from "@/lib/api/services/galleries";
 
 type Params = { slug: string };
 
@@ -33,7 +19,7 @@ export default async function GalleryDetailsPage({ params }: { params: Promise<P
   const { slug } = await params;
   let data;
   try {
-    ({ data } = await fetchGallery(slug));
+    ({ data } = await getGallery(slug));
   } catch (e: unknown) {
     if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;

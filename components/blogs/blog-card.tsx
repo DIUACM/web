@@ -13,8 +13,8 @@ export type BlogPostListItem = {
   title: string;
   slug: string;
   published_at: string;
-  author: string;
-  featured_image: string;
+  author?: string | null;
+  featured_image?: string | null;
 };
 
 export function formatPublishedAt(iso: string) {

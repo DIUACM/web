@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, GraduationCap, MapPin, Target, Trophy, Users } from "lucide-react";
 import { CopyButton } from "@/components/programmers/copy-button";
+import { getProgrammer } from "@/lib/api/services/programmers";
 
 type ContestMember = {
   name: string;
@@ -54,21 +55,7 @@ type ProgrammerDetail = {
   tracker_performance: TrackerPerformance[];
 };
 
-const DEFAULT_BASE_URL = "http://localhost:8000";
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_BASE_URL;
-
-async function fetchProgrammer(username: string): Promise<{ data: ProgrammerDetail }> {
-  const url = new URL(`/api/programmers/${username}`, API_BASE_URL);
-  const res = await fetch(url.toString(), { 
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
-  if (res.status === 404) throw new Error("NOT_FOUND");
-  if (!res.ok) throw new Error(`Failed to fetch programmer: ${res.status}`);
-  return res.json();
-}
+// Fetching handled via service with caching/tags
 
 function formatContestDate(iso: string) {
   const d = new Date(iso);
@@ -92,7 +79,7 @@ export const revalidate = 7200;
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { username } = await params;
   try {
-    const { data } = await fetchProgrammer(username);
+    const { data } = await getProgrammer(username);
     return {
       title: `${data.name} - Programmer Profile | DIU ACM`,
       description: `View ${data.name}'s programming profile, contest participations, and achievements at DIU ACM`,
@@ -109,7 +96,7 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
   const { username } = await params;
   let data;
   try {
-    ({ data } = await fetchProgrammer(username));
+    ({ data } = await getProgrammer(username));
   } catch (e: unknown) {
     if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
     throw e;
