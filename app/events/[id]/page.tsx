@@ -10,6 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
 import { getEvent } from "@/lib/api/services/events";
 
+export const revalidate = 300;
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  return [];
+}
+
 // Types sourced from services
 
 // Fetching handled via service with caching/tags
