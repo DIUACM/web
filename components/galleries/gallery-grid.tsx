@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -45,11 +46,14 @@ export function GalleryGrid({ media, title }: { media: MediaItem[]; title: strin
             className="mb-4 w-full text-left break-inside-avoid"
           >
             <div className="relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
-              <img
+              <Image
                 src={m.url}
                 alt={m.title || `${title} - Image ${i + 1}`}
+                width={0}
+                height={0}
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 className="w-full h-auto object-cover"
-                loading={i < 6 ? "eager" : "lazy"}
+                priority={i < 6}
               />
             </div>
           </button>
@@ -64,10 +68,14 @@ export function GalleryGrid({ media, title }: { media: MediaItem[]; title: strin
           </DialogHeader>
           {current && (
             <div className="relative bg-black">
-              <img
+              <Image
                 src={current.url}
                 alt={current.title || title}
+                width={0}
+                height={0}
+                sizes="100vw"
                 className="w-full h-auto object-contain max-h-[80vh] bg-black"
+                priority
               />
               <div className="absolute inset-0 flex items-center justify-between px-2">
                 <Button variant="secondary" size="icon" className="bg-black/40 hover:bg-black/60 text-white" onClick={prev} aria-label="Previous image">
