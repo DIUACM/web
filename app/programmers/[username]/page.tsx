@@ -27,11 +27,6 @@ function formatContestDate(iso: string) {
 
 type Params = { username: string };
 
-export async function generateStaticParams() {
-  return [];
-}
-export const revalidate = 7200;
-
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { username } = await params;
   try {
