@@ -106,7 +106,7 @@ export default async function TrackerDetailsPage({ params }: { params: Promise<P
               <BarChart3 className="h-full w-full" />
             </div>
             <h3 className="mb-2 text-lg font-medium text-slate-700 dark:text-slate-300">No data available</h3>
-            <p className="text-slate-600 dark:text-slate-400">This ranklist doesn't have any data to display yet.</p>
+            <p className="text-slate-600 dark:text-slate-400">This ranklist doesn&apos;t have any data to display yet.</p>
           </div>
         ) : (
           <div className="inline-block min-w-full align-middle">
