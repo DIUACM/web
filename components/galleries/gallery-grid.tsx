@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Dialog,
   DialogContent,
@@ -38,23 +36,22 @@ export function GalleryGrid({ media, title }: { media: MediaItem[]; title: strin
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
         {media.map((m, i) => (
           <button
             key={i}
             type="button"
             onClick={() => setIndex(i)}
-            className="relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer hover:opacity-95 hover:scale-[1.01]"
+            className="mb-4 w-full text-left break-inside-avoid"
           >
-            <AspectRatio ratio={16 / 9}>
-              <Image
+            <div className="relative overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+              <img
                 src={m.url}
                 alt={m.title || `${title} - Image ${i + 1}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="w-full h-auto object-cover"
+                loading={i < 6 ? "eager" : "lazy"}
               />
-            </AspectRatio>
+            </div>
           </button>
         ))}
       </div>
@@ -67,11 +64,9 @@ export function GalleryGrid({ media, title }: { media: MediaItem[]; title: strin
           </DialogHeader>
           {current && (
             <div className="relative bg-black">
-              <Image
+              <img
                 src={current.url}
                 alt={current.title || title}
-                width={1600}
-                height={900}
                 className="w-full h-auto object-contain max-h-[80vh] bg-black"
               />
               <div className="absolute inset-0 flex items-center justify-between px-2">
