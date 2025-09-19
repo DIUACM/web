@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowRight, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { ProgrammerListItem } from "@/lib/api/programmers";
 
 function getCfRankClass(rating: number | null | undefined) {
@@ -22,7 +22,7 @@ export function ProgrammerCard({ user }: { user: ProgrammerListItem }) {
   return (
     <Link href={`/programmers/${user.username}`} className="block">
       <Card className="group overflow-hidden border-slate-200/70 dark:border-slate-800 hover:border-blue-300/60 dark:hover:border-blue-600/50 transition-colors">
-        <CardContent className="p-4 sm:p-5">
+        <CardContent>
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 ring-1 ring-slate-200 dark:ring-slate-800">
               <AvatarImage src={user.profile_picture} alt={user.name || user.username} />
@@ -42,7 +42,6 @@ export function ProgrammerCard({ user }: { user: ProgrammerListItem }) {
                     {user.student_id && <span className="truncate">• {user.student_id}</span>}
                   </div>
                 </div>
-                <ArrowRight className="h-5 w-5 flex-shrink-0 text-slate-400 group-hover:text-blue-500 transition-colors" />
               </div>
               <div className="mt-2 text-sm flex items-center gap-2">
                 <Star className="h-4 w-4 text-amber-500" />
