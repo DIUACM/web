@@ -1,6 +1,7 @@
 import { CustomPagination } from "@/components/custom-pagination";
 import { ProgrammerCard } from "@/components/programmers/programmer-card";
 import { fetchProgrammers } from "@/lib/api/programmers";
+import { ProgrammersSearch } from "./components/search";
 
 type SearchParams = {
   search?: string;
@@ -25,7 +26,11 @@ export default async function ProgrammersPage({ searchParams }: { searchParams: 
         <p className="text-slate-600 dark:text-slate-300 mt-1">DIU ACM programmers ranked by Codeforces rating.</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="mt-6">
+        <ProgrammersSearch initialSearch={get(sp.search) || ""} />
+      </div>
+
+      <div className="mt-6 space-y-4">
         {data.length === 0 && (
           <p className="text-slate-500">No programmers found.</p>
         )}
