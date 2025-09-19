@@ -9,6 +9,7 @@ import { ArrowLeft, BarChart3, Info, Shield, TrendingUp, Users } from "lucide-re
 // Types sourced from services
 
 import { getTracker } from "@/lib/api/services/trackers";
+import { HttpError } from "@/lib/api/http";
 
 type Params = { slug: string; keyword?: string[] };
 
@@ -20,7 +21,7 @@ export default async function TrackerDetailsPage({ params }: { params: Promise<P
   try {
     ({ data } = await getTracker(slug, keyword));
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 

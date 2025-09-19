@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatPublishedAt } from "@/lib/date";
 import { getBlogPost } from "@/lib/api/services/blogs";
+import { HttpError } from "@/lib/api/http";
 
 // Data fetching via service with caching/tags
 
@@ -16,7 +17,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<Para
   try {
     ({ data } = await getBlogPost(slug));
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 

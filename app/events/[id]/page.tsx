@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
 import { getEvent } from "@/lib/api/services/events";
+import { HttpError } from "@/lib/api/http";
 
 // Types sourced from services
 
@@ -45,7 +46,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
   try {
     ({ data } = await getEvent(id));
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 

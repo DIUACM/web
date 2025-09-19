@@ -7,6 +7,7 @@ import { GalleryGrid } from "@/components/galleries/gallery-grid";
 // Types sourced from services
 
 import { getGallery } from "@/lib/api/services/galleries";
+import { HttpError } from "@/lib/api/http";
 
 type Params = { slug: string };
 
@@ -16,7 +17,7 @@ export default async function GalleryDetailsPage({ params }: { params: Promise<P
   try {
     ({ data } = await getGallery(slug));
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 

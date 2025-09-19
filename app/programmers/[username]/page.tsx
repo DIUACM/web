@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, GraduationCap, MapPin, Target, Trophy, Users } from "lucide-react";
 import { CopyButton } from "@/components/programmers/copy-button";
 import { getProgrammer } from "@/lib/api/services/programmers";
+import { HttpError } from "@/lib/api/http";
 
 // Types sourced from services
 
@@ -49,7 +50,7 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
   try {
     ({ data } = await getProgrammer(username));
   } catch (e: unknown) {
-    if (typeof e === "object" && e && (e as { message?: string }).message === "NOT_FOUND") return notFound();
+    if (e instanceof HttpError && e.status === 404) return notFound();
     throw e;
   }
 
