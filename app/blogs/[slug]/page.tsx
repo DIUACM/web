@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formatPublishedAt } from "@/components/blogs/blog-card";
+import { formatPublishedAt } from "@/lib/date";
 import { getBlogPost } from "@/lib/api/services/blogs";
 
 // Data fetching via service with caching/tags
