@@ -22,7 +22,7 @@ export default async function ContestsPage({ searchParams }: { searchParams: Pro
       </div>
 
       {data.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-8 md:p-16 text-center transition-all duration-300">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-10 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 mb-4">
             <Trophy className="h-8 w-8 text-slate-500 dark:text-slate-400" />
           </div>

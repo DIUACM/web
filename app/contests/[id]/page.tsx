@@ -39,8 +39,8 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md overflow-hidden mb-8">
-        <div className="p-6 md:p-8">
+      <Card className="overflow-hidden mb-8">
+        <CardContent>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
             {data.name}
           </h1>
@@ -72,7 +72,7 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
 
           {data.description && (
             <Card className="mb-6">
-              <CardContent className="p-5">
+              <CardContent>
                 <div className="prose prose-slate dark:prose-invert max-w-none">
                   <p>{data.description}</p>
                 </div>
@@ -92,7 +92,7 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {data.teams.map((team) => (
                   <Card key={team.id} className="overflow-hidden">
-                    <CardContent className="p-5">
+                    <CardContent>
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{team.name}</h3>
@@ -154,8 +154,8 @@ export default async function ContestDetailsPage({ params }: { params: Promise<P
               </div>
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </section>
   );
 }

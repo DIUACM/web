@@ -167,15 +167,10 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
 
           <div className="space-y-6">
             {data.tracker_performance.map((tracker) => (
-              <div
-                key={tracker.slug}
-                className="relative bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 transition-all overflow-hidden group hover:shadow-lg"
-              >
-                
-
-                <div className="p-5 relative z-10">
+              <Card key={tracker.slug} className="transition-shadow hover:shadow-md">
+                <CardContent>
                   <div className="mb-4">
-                    <h3 className="text-lg font-medium text-slate-900 dark:text-white">{tracker.title}</h3>
+                    <h3 className="text-lg font-medium">{tracker.title}</h3>
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -183,22 +178,22 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
                       <Link
                         key={rankList.keyword}
                         href={`/trackers/${tracker.slug}?keyword=${encodeURIComponent(rankList.keyword)}`}
-                        className="block p-4 rounded-lg bg-slate-50/50 dark:bg-slate-800/30 hover:bg-slate-100/80 dark:hover:bg-slate-700/50 transition-colors border border-slate-200/60 dark:border-slate-600/40"
+                        className="block p-4 rounded-lg border transition-colors bg-muted/30 hover:bg-muted/50"
                       >
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium text-slate-900 dark:text-white">{rankList.keyword}</h4>
+                          <h4 className="font-medium">{rankList.keyword}</h4>
                           <Badge variant="outline" className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300">
                             #{rankList.user_position}
                           </Badge>
                         </div>
 
-                        <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                        <div className="space-y-2 text-sm text-muted-foreground">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1">
                               <Users className="w-4 h-4" />
                               <span>Total Users</span>
                             </div>
-                            <span className="font-medium">{rankList.total_users}</span>
+                            <span className="font-medium text-foreground">{rankList.total_users}</span>
                           </div>
 
                           <div className="flex items-center justify-between">
@@ -206,7 +201,7 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
                               <Calendar className="w-4 h-4" />
                               <span>Events</span>
                             </div>
-                            <span className="font-medium">{rankList.events_count}</span>
+                            <span className="font-medium text-foreground">{rankList.events_count}</span>
                           </div>
 
                           <div className="flex items-center justify-between">
@@ -220,8 +215,8 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
                       </Link>
                     ))}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -236,58 +231,60 @@ export default async function ProgrammerDetailsPage({ params }: { params: Promis
 
           <div className="space-y-4">
             {data.contests.map((c) => (
-              <div key={c.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 sm:p-6 bg-white dark:bg-slate-800">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                  <div>
-                    <h3 className="text-lg font-medium text-slate-900 dark:text-white">{c.name}</h3>
-                    {c.date && (
-                      <p className="text-sm text-slate-500 dark:text-slate-400">{formatContestDate(c.date)}</p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">
-                      {c.team_name}
-                    </Badge>
-                    {c.rank && (
-                      <Badge variant="outline" className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300">
-                        Rank #{c.rank}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Team Members ({c.members.length})</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {c.members.map((m) => (
-                      <Link key={m.username} href={`/programmers/${m.username}`} className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <Avatar className="w-8 h-8 shrink-0">
-                          <AvatarImage src={m.profile_picture || ""} alt={m.name} />
-                          <AvatarFallback className="text-xs bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
-                            {m.name?.charAt(0) || "?"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400">
-                            {m.name}
-                          </p>
-                          {m.student_id && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{m.student_id}</p>
-                          )}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-
-                  {c.solve_count !== null && (
-                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 flex items-center gap-2">
-                      <Trophy className="h-4 w-4 text-blue-500" />
-                      <span className="text-sm text-slate-600 dark:text-slate-300">{c.solve_count} problems solved</span>
+              <Card key={c.id}>
+                <CardContent>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-lg font-medium">{c.name}</h3>
+                      {c.date && (
+                        <p className="text-sm text-muted-foreground">{formatContestDate(c.date)}</p>
+                      )}
                     </div>
-                  )}
-                </div>
-              </div>
+
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300">
+                        {c.team_name}
+                      </Badge>
+                      {c.rank && (
+                        <Badge variant="outline" className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300">
+                          Rank #{c.rank}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-medium text-foreground/80 mb-3">Team Members ({c.members.length})</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {c.members.map((m) => (
+                        <Link key={m.username} href={`/programmers/${m.username}`} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                          <Avatar className="w-8 h-8 shrink-0">
+                            <AvatarImage src={m.profile_picture || ""} alt={m.name} />
+                            <AvatarFallback className="text-xs bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+                              {m.name?.charAt(0) || "?"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium truncate hover:text-blue-600 dark:hover:text-blue-400">
+                              {m.name}
+                            </p>
+                            {m.student_id && (
+                              <p className="text-xs text-muted-foreground">{m.student_id}</p>
+                            )}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+
+                    {c.solve_count !== null && (
+                      <div className="mt-3 pt-3 border-t border-border flex items-center gap-2">
+                        <Trophy className="h-4 w-4 text-blue-500" />
+                        <span className="text-sm text-muted-foreground">{c.solve_count} problems solved</span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
