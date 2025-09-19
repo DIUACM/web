@@ -10,17 +10,11 @@ import { ArrowLeft, BarChart3, Info, Shield, TrendingUp, Users } from "lucide-re
 
 import { getTracker } from "@/lib/api/services/trackers";
 
-type Params = { slug: string };
+type Params = { slug: string; keyword?: string[] };
 
-type RawSearchParams = Record<string, string | string[] | undefined> & {
-  keyword?: string;
-};
-
-export default async function TrackerDetailsPage({ params, searchParams }: { params: Promise<Params>; searchParams: Promise<RawSearchParams> }) {
-  const { slug } = await params;
-  const sp = await searchParams;
-  const get = (v?: string | string[]) => (Array.isArray(v) ? v[0] : v);
-  const keyword = get(sp.keyword);
+export default async function TrackerDetailsPage({ params }: { params: Promise<Params> }) {
+  const { slug, keyword: keywordArray } = await params;
+  const keyword = keywordArray?.[0];
 
   let data;
   try {
@@ -58,7 +52,7 @@ export default async function TrackerDetailsPage({ params, searchParams }: { par
                 <div className="flex flex-wrap gap-2">
                   {data.rank_lists.map((rl) => {
                     const isActive = rl.keyword === rank.keyword;
-                    const href = `?keyword=${encodeURIComponent(rl.keyword)}`;
+                    const href = `/trackers/${slug}/${encodeURIComponent(rl.keyword)}`;
                     return (
                       <Button
                         asChild
@@ -112,7 +106,7 @@ export default async function TrackerDetailsPage({ params, searchParams }: { par
               <BarChart3 className="h-full w-full" />
             </div>
             <h3 className="mb-2 text-lg font-medium text-slate-700 dark:text-slate-300">No data available</h3>
-            <p className="text-slate-600 dark:text-slate-400">This ranklist doesn’t have any data to display yet.</p>
+            <p className="text-slate-600 dark:text-slate-400">This ranklist doesn't have any data to display yet.</p>
           </div>
         ) : (
           <div className="inline-block min-w-full align-middle">
