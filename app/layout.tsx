@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import React from "react";
 import NextTopLoader from "nextjs-toploader";
 import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ export default function RootLayout({
           scriptProps={{ "data-cfasync": "false" }}
         >
           <NextTopLoader showSpinner={false} />
+          <Navbar />
 
             {/* Background elements */}
             <div className="fixed inset-0 -z-10">
