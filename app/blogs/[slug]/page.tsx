@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,14 +51,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<Para
             )}
           </div>
 
-          {data.featured_image && (
-            <Card className="my-6 border-slate-200/70 dark:border-slate-800 overflow-hidden">
-              <div className="relative w-full aspect-[16/9]">
-                <Image src={data.featured_image} alt={data.title} fill className="object-cover" />
-              </div>
-              <CardContent className="hidden" />
-            </Card>
-          )}
+          {/* Featured image intentionally hidden per requirements */}
 
           <Separator className="my-6" />
 
