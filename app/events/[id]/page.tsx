@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
 import { getEvent } from "@/lib/api/services/events";
 import { HttpError } from "@/lib/api/http";
-import { AttendanceButton } from "@/components/events/attendance-button";
+import { AttendanceButtonWrapper } from "./attendance-button-wrapper";
 
 // Types sourced from services
 
@@ -83,7 +83,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
       </div>
 
       <div className="mb-6">
-        <AttendanceButton
+        <AttendanceButtonWrapper
           eventId={data.id}
           eventTitle={data.title}
           startingAt={data.starting_at}

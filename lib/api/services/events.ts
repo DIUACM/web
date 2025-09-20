@@ -57,7 +57,33 @@ export async function getEvents(params: { search?: string; type?: string; partic
   return apiFetch<PaginatedResponse<EventListItem>>(url, { next: { revalidate: 300, tags } })
 }
 
+function isAttendanceWindowOpen(startingAt: string, endingAt: string): boolean {
+  const now = new Date();
+  const startTime = new Date(startingAt);
+  const endTime = new Date(endingAt);
+  
+  // Attendance window: opens 15 minutes before starting_at and closes 20 minutes after ending_at
+  const windowStart = new Date(startTime.getTime() - 15 * 60 * 1000); // 15 minutes before
+  const windowEnd = new Date(endTime.getTime() + 20 * 60 * 1000); // 20 minutes after
+  
+  return now >= windowStart && now <= windowEnd;
+}
+
 export async function getEvent(id: number | string) {
   const url = toURL(`/api/events/${id}`)
-  return apiFetch<{ data: EventDetail }>(url, { next: { revalidate: 300, tags: ['events', `events:id:${id}`] } })
+  
+  // First fetch with caching to check if attendance window is active
+  const response = await apiFetch<{ data: EventDetail }>(url, { 
+    next: { revalidate: 300, tags: ['events', `events:id:${id}`] } 
+  })
+  
+  // If attendance window is open and attendance is enabled, refetch without cache
+  if (response.data.open_for_attendance && 
+      isAttendanceWindowOpen(response.data.starting_at, response.data.ending_at)) {
+    return apiFetch<{ data: EventDetail }>(url, { 
+      next: { revalidate: 0, tags: ['events', `events:id:${id}`] } 
+    })
+  }
+  
+  return response
 }

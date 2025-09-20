@@ -26,6 +26,7 @@ interface AttendanceButtonProps {
     profile_picture: string;
     attendance_time: string;
   }[];
+  onAttendanceSuccess?: () => void;
 }
 
 type AttendanceWindowStatus = "not-started" | "open" | "closed";
@@ -67,7 +68,8 @@ export function AttendanceButton({
   endingAt, 
   openForAttendance = false,
   eventLink,
-  attendees = []
+  attendees = [],
+  onAttendanceSuccess
 }: AttendanceButtonProps) {
   const { session } = useAuth();
   const router = useRouter();
@@ -131,6 +133,11 @@ export function AttendanceButton({
       setIsOpen(false);
       setPassword("");
       toast.success("Attendance marked successfully!");
+      
+      // Notify parent component about successful attendance
+      if (onAttendanceSuccess) {
+        onAttendanceSuccess();
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to mark attendance");
     } finally {
