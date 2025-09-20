@@ -1,5 +1,7 @@
 "use client";
 
+import { ApiError } from "@/lib/utils";
+
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
@@ -31,15 +33,15 @@ export async function apiFetchClient<T>(
     },
   });
   if (!res.ok) {
-    let errorBody: any = undefined;
+    let errorBody: unknown = undefined;
     try {
       errorBody = await res.json();
     } catch {
       // ignore
     }
     const message =
-      errorBody?.message || `${res.status} ${res.statusText}` || "Request failed";
-    const err = new Error(message) as Error & { status?: number; body?: any };
+      (errorBody as ApiError)?.message || `${res.status} ${res.statusText}` || "Request failed";
+    const err = new Error(message) as Error & { status?: number; body?: unknown };
     err.status = res.status;
     err.body = errorBody;
     throw err;

@@ -10,7 +10,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!loading && !session) router.replace("/login");
-  }, [loading, session]);
+  }, [loading, session, router]);
 
   return (
     <div className="container mx-auto px-4 py-16">

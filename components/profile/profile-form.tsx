@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageCropper } from "@/components/image-cropper";
 import { useAuth } from "@/components/providers/auth-provider";
 import { getProfile, updateProfile, uploadProfilePicture } from "@/lib/api/services/profile";
+import { getApiErrorInfo, getErrorMessage } from "@/lib/utils";
 
 const schema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters").max(255),
@@ -65,7 +66,7 @@ export function ProfileForm() {
         form.reset({
           name: u.name || "",
           username: u.username || "",
-          gender: (u.gender as any) || "unspecified",
+          gender: (u.gender as "unspecified" | "male" | "female" | "other") || "unspecified",
           phone: u.phone || "",
           codeforces_handle: u.codeforces_handle || "",
           atcoder_handle: u.atcoder_handle || "",
@@ -74,8 +75,8 @@ export function ProfileForm() {
           student_id: u.student_id || "",
         });
         setUser(() => u);
-      } catch (e: any) {
-        toast.error(e?.message || "Failed to load profile");
+      } catch (e: unknown) {
+        toast.error(getErrorMessage(e) || "Failed to load profile");
       } finally {
         setLoading(false);
       }
@@ -84,7 +85,7 @@ export function ProfileForm() {
     return () => {
       active = false;
     };
-  }, [token]);
+  }, [token, form, setUser]);
 
   async function onSubmit(values: Values) {
     setSaving(true);
@@ -92,19 +93,19 @@ export function ProfileForm() {
       const payload = {
         name: values.name,
         username: values.username,
-        gender: values.gender === "unspecified" ? null : (values.gender as any),
+        gender: values.gender === "unspecified" ? null : values.gender,
         phone: values.phone || null,
         codeforces_handle: values.codeforces_handle || null,
         atcoder_handle: values.atcoder_handle || null,
         vjudge_handle: values.vjudge_handle || null,
         department: values.department || null,
         student_id: values.student_id || null,
-      } as any;
+      };
       const res = await updateProfile(token, payload);
       setUser(() => res.data);
       toast.success("Profile updated successfully");
-    } catch (e: any) {
-      const fieldErrors = e?.body?.errors as Record<string, string[]> | undefined;
+    } catch (e: unknown) {
+      const { fieldErrors, message } = getApiErrorInfo(e);
       if (fieldErrors && typeof fieldErrors === "object") {
         const knownKeys = [
           "name",
@@ -135,7 +136,7 @@ export function ProfileForm() {
         }
         toast.error("Please fix the highlighted fields.");
       } else {
-        toast.error(e?.message || "Failed to update profile");
+        toast.error(message || "Failed to update profile");
       }
     } finally {
       setSaving(false);
@@ -163,8 +164,9 @@ export function ProfileForm() {
       setUser((u) => ({ ...u, profile_picture: res.data.url }));
       toast.success("Profile picture updated successfully");
       setShowCropper(false);
-    } catch (e: any) {
-      const msg = e?.body?.errors?.profile_picture?.[0] || e?.message || "Failed to upload image";
+    } catch (e: unknown) {
+      const { body, message } = getApiErrorInfo(e);
+      const msg = body?.errors?.profile_picture?.[0] || message;
       toast.error(msg);
     } finally {
       setUploading(false);
@@ -261,7 +263,7 @@ export function ProfileForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Gender</FormLabel>
-                          <Select onValueChange={(v) => field.onChange(v as any)} value={field.value} disabled={saving || loading}>
+                          <Select onValueChange={(v) => field.onChange(v as "unspecified" | "male" | "female" | "other")} value={field.value} disabled={saving || loading}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select gender" />

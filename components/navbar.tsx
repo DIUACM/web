@@ -49,9 +49,6 @@ const menuItems = [
   { name: "Contact", href: "/contact", icon: Mail },
 ];
 
-// Type definitions for mock session
-type Session = ReturnType<typeof useAuth>["session"];
-
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();

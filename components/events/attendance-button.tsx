@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Calendar, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils";
 import { toURL } from "@/lib/api/client";
 
 interface AttendanceButtonProps {
@@ -138,8 +139,8 @@ export function AttendanceButton({
       if (onAttendanceSuccess) {
         onAttendanceSuccess();
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to mark attendance");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error) || "Failed to mark attendance");
     } finally {
       setIsSubmitting(false);
     }

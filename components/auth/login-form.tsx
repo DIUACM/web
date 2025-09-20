@@ -14,9 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { getApiErrorInfo } from "@/lib/utils";
 
 const schema = z.object({
   identifier: z.string().min(3, "Enter email or username"),
@@ -25,7 +26,8 @@ const schema = z.object({
 
 type Values = z.infer<typeof schema>;
 
-export function LoginForm() {
+// Component that uses useSearchParams - needs to be wrapped in Suspense
+function LoginFormContent() {
   const { login, ...auth } = useAuth();
   const router = useRouter();
   const search = useSearchParams();
@@ -40,7 +42,7 @@ export function LoginForm() {
     if (!auth.loading && auth.session) {
       router.replace(redirectIfAuthed);
     }
-  }, [auth.loading, auth.session, redirectIfAuthed]);
+  }, [auth.loading, auth.session, redirectIfAuthed, router]);
 
   async function onSubmit(values: Values) {
     setSubmitting(true);
@@ -48,8 +50,9 @@ export function LoginForm() {
       await login(values);
       toast.success("Signed in successfully");
       router.push(redirectOnSuccess);
-    } catch (err: any) {
-      const msg = err?.body?.errors?.identifier?.[0] || err?.message || "Login failed";
+    } catch (err: unknown) {
+      const { body, message } = getApiErrorInfo(err);
+      const msg = body?.errors?.identifier?.[0] || message;
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -130,5 +133,24 @@ export function LoginForm() {
         </form>
       </Form>
     </div>
+  );
+}
+
+// Main component wrapped in Suspense
+export function LoginForm() {
+  return (
+    <Suspense fallback={
+      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur p-6 shadow-sm">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-cyan-600 text-white">
+            <LogIn size={18} />
+          </div>
+          <h1 className="text-2xl font-semibold">Sign in</h1>
+          <p className="text-sm text-slate-500 mt-1">Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginFormContent />
+    </Suspense>
   );
 }
