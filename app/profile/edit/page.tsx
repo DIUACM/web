@@ -13,8 +13,7 @@ export default function Page() {
   }, [loading, session]);
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <h1 className="text-2xl font-semibold mb-6">Your Profile</h1>
+    <div className="container mx-auto px-4 py-16">
       {session ? <ProfileForm /> : null}
     </div>
   );
