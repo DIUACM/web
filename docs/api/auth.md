@@ -1,108 +1,95 @@
-# Auth API
+# Auth API Documentation
 
-Authentication uses Laravel Sanctum personal access tokens. Include the issued token in the `Authorization` header for protected endpoints.
+This document describes the endpoints for authenticating with the API using Laravel Sanctum. Users can log in with either email or username. Logout revokes only the current access token.
 
-- Header format: `Authorization: Bearer <token>`
-- Content type: `application/json`
-- Base path: `/api`
+## Endpoints
 
-## Login
+### Login
 
-- Method: `POST`
+- Method: POST
 - URL: `/api/auth/login`
 - Auth: Not required
+- Body: `application/json`
 
 Request Body
+- `identifier`: string, required — email or username
+- `password`: string, required
+- `device_name`: string, optional (defaults to `api`)
 
+Example Request
 ```
+POST /api/auth/login
+Content-Type: application/json
+
 {
-  "login": "<email-or-username>",
-  "password": "<password>"
+  "identifier": "jane@example.com",
+  "password": "secret",
+  "device_name": "ios-app"
 }
 ```
 
-Notes
-- `login` accepts either a valid email or a username.
-- Uses the `Auth` facade under the hood: attempts `email` or `username` + `password`.
-
-Success Response (200)
-
-```
+Example Response
+```json
 {
+  "token": "1|Z...",
+  "token_type": "Bearer",
   "user": {
     "id": 1,
     "name": "Jane Doe",
     "email": "jane@example.com",
-    "username": "jane",
-    "gender": "Male|Female|Other|null",
-    "phone": null,
+    "username": "janedoe",
+    "gender": "female",
+    "phone": "+8801XXXXXXXXX",
     "codeforces_handle": null,
     "atcoder_handle": null,
     "vjudge_handle": null,
-    "department": null,
+    "department": "CSE",
     "student_id": null,
-    "max_cf_rating": 0,
-    "profile_picture": "https://.../media/.../thumb.jpg"
-  },
-  "token": "<sanctum-token>"
-}
-```
-
-Error Response (422)
-
-```
-{
-  "message": "Invalid credentials."
-}
-```
-
-Validation Errors (422)
-
-```
-{
-  "message": "The given data was invalid.",
-  "errors": {
-    "login": ["The login field is required."],
-    "password": ["The password field is required."]
+    "max_cf_rating": 1650,
+    "profile_picture": "https://.../path/to/original.jpg"
   }
 }
 ```
 
-## Logout
-
-- Method: `POST`
-- URL: `/api/auth/logout`
-- Auth: Required (Sanctum bearer token)
-
-Behavior
-- Revokes the current access token (logs out only the current device/session).
-
-Success Response (200)
-
-```
+Validation Errors
+```json
 {
-  "message": "Logged out successfully."
+  "message": "Validation failed",
+  "errors": {
+    "identifier": ["The provided credentials are incorrect."]
+  }
 }
 ```
 
-## Usage Example
+Notes
+- If the account email is unverified, an error is returned requiring email verification.
 
-Curl
+---
 
-```bash
-# Login
-curl -sS -X POST "${BASE_URL}/api/auth/login" \
-  -H 'Content-Type: application/json' \
-  -d '{"login":"jane@example.com","password":"secret"}'
+### Logout
 
-# => capture token from response as TOKEN
+- Method: POST
+- URL: `/api/auth/logout`
+- Auth: Required (Sanctum)
 
-# Logout
-curl -sS -X POST "${BASE_URL}/api/auth/logout" \
-  -H "Authorization: Bearer ${TOKEN}"
+Behavior
+- Revokes the current access token only. Other tokens remain valid.
+
+Example cURL
+```
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  http://localhost:8000/api/auth/logout
 ```
 
-Postman
-- Create a request to `POST /api/auth/login` with a raw JSON body.
-- Save the `token` from the response and set it as a Postman variable.
-- Create `POST /api/auth/logout` and set `Authorization: Bearer {{token}}`.
+Example Response
+```json
+{ "message": "Logged out successfully." }
+```
+
+## HTTP Status Codes
+- 200: Success
+- 400: Bad Request (validation errors)
+- 401: Unauthorized (missing/invalid token)
+- 422: Unprocessable Entity (validation failed)
+- 500: Internal Server Error
