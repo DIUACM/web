@@ -19,7 +19,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSession(loadSession());
+    const ls = loadSession();
+    setSession(ls);
+    try {
+      if (typeof document !== "undefined") {
+        const isHttps = typeof location !== "undefined" && location.protocol === "https:";
+        if (ls) {
+          document.cookie = `diuacm_auth=1; Path=/; Max-Age=2592000; SameSite=Lax${isHttps ? "; Secure" : ""}`;
+        } else {
+          document.cookie = `diuacm_auth=0; Path=/; Max-Age=0; SameSite=Lax${isHttps ? "; Secure" : ""}`;
+        }
+      }
+    } catch {}
     setLoading(false);
   }, []);
 
@@ -28,6 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const value: StoredSession = { token: res.token, user: res.user };
     setSession(value);
     saveSession(value);
+    try {
+      if (typeof document !== "undefined") {
+        const isHttps = typeof location !== "undefined" && location.protocol === "https:";
+        document.cookie = `diuacm_auth=1; Path=/; Max-Age=2592000; SameSite=Lax${isHttps ? "; Secure" : ""}`;
+      }
+    } catch {}
   }, []);
 
   const logout = useCallback(async () => {
@@ -39,6 +56,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setSession(null);
     clearSession();
+    try {
+      if (typeof document !== "undefined") {
+        const isHttps = typeof location !== "undefined" && location.protocol === "https:";
+        document.cookie = `diuacm_auth=0; Path=/; Max-Age=0; SameSite=Lax${isHttps ? "; Secure" : ""}`;
+      }
+    } catch {}
   }, [session?.token]);
 
   const setUser = useCallback((updater: (u: StoredSession["user"]) => StoredSession["user"]) => {
