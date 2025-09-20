@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, ExternalLink, ArrowLeft } from "lucide-react";
+import { Calendar, ArrowLeft } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateRange, humanizeScope, humanizeType } from "@/components/events/event-card";
 import { getEvent } from "@/lib/api/services/events";
 import { HttpError } from "@/lib/api/http";
+import { AttendanceButton } from "@/components/events/attendance-button";
 
 // Types sourced from services
 
@@ -81,15 +82,17 @@ export default async function EventDetailsPage({ params }: { params: Promise<Par
         </div>
       </div>
 
-      {data.event_link && (
-        <div className="mb-6">
-          <Button asChild variant="outline">
-            <a href={data.event_link} target="_blank" rel="noopener noreferrer">
-              Open Event Link <ExternalLink className="h-4 w-4 ml-2" />
-            </a>
-          </Button>
-        </div>
-      )}
+      <div className="mb-6">
+        <AttendanceButton
+          eventId={data.id}
+          eventTitle={data.title}
+          startingAt={data.starting_at}
+          endingAt={data.ending_at}
+          openForAttendance={data.open_for_attendance}
+          eventLink={data.event_link}
+          attendees={data.attendees}
+        />
+      </div>
 
       <Card className="border-slate-200/70 dark:border-slate-800">
         <CardContent className="p-5 sm:p-6">
