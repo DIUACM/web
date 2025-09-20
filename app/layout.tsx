@@ -6,6 +6,7 @@ import React from "react";
 import NextTopLoader from "nextjs-toploader";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,8 +29,9 @@ export default function RootLayout({
           disableTransitionOnChange
           scriptProps={{ "data-cfasync": "false" }}
         >
-          <NextTopLoader showSpinner={false} />
-          <Navbar />
+          <AuthProvider>
+            <NextTopLoader showSpinner={false} />
+            <Navbar />
 
             {/* Background elements */}
             <div className="fixed inset-0 -z-10">
@@ -40,8 +42,9 @@ export default function RootLayout({
             </div>
 
             {children}
-              <Footer />
+            <Footer />
             <Toaster richColors />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

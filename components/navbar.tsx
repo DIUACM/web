@@ -34,6 +34,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/components/providers/auth-provider";
 
 // Memoized menu items for better performance
 const menuItems = [
@@ -49,24 +50,14 @@ const menuItems = [
 ];
 
 // Type definitions for mock session
-type User = {
-  name?: string;
-  email?: string;
-  image?: string;
-};
-
-type Session = {
-  user?: User;
-} | null;
+type Session = ReturnType<typeof useAuth>["session"];
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  // Mock session data - replace with actual auth implementation
-  const [session] = useState<Session>(null); // Replace with actual session logic
-  const isLoading = false; // Replace with actual loading state
+  const { session, loading, logout } = useAuth();
   
   // For demo purposes, you can uncomment the line below to test with a mock user
   // const [session] = useState<Session>({ user: { name: "John Doe", email: "john@example.com", image: "/avatar.jpg" } });
@@ -107,10 +98,8 @@ export default function Navbar() {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  // Mock signOut function - replace with actual auth implementation
   const signOut = () => {
-    console.log("Sign out clicked");
-    // Implement actual sign out logic here
+    logout();
   };
 
   return (
@@ -184,7 +173,7 @@ export default function Navbar() {
                   <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 </Button>
 
-                {isLoading ? (
+                {loading ? (
                   <div className="h-9 w-9 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
                 ) : session ? (
                   <DropdownMenu>
@@ -196,7 +185,7 @@ export default function Navbar() {
                       >
                         <Avatar className="h-full w-full">
                           <AvatarImage
-                            src={session?.user?.image || undefined}
+                            src={session?.user?.profile_picture || undefined}
                             alt={session?.user?.name || "User"}
                             className="object-cover"
                           />
@@ -220,7 +209,7 @@ export default function Navbar() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/edit-profile`}
+                          href={`/profile/edit`}
                           className="cursor-pointer flex w-full items-center"
                         >
                           <User className="mr-2 h-4 w-4" />
@@ -270,12 +259,12 @@ export default function Navbar() {
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               </Button>
 
-              {isLoading ? (
+              {loading ? (
                 <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
               ) : session ? (
                 <Avatar className="h-8 w-8 border-2 border-white dark:border-slate-800">
                   <AvatarImage
-                    src={session?.user?.image || undefined}
+                    src={session?.user?.profile_picture || undefined}
                     alt={session?.user?.name || "User"}
                     className="object-cover"
                   />
@@ -319,7 +308,7 @@ export default function Navbar() {
           <div className="flex flex-col h-full">
             {/* Menu header with profile or sign in */}
             <div className="p-4 border-b border-slate-200 dark:border-slate-800">
-              {isLoading ? (
+              {loading ? (
                 <div className="flex items-center space-x-3">
                   <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse" />
                   <div className="space-y-2">
@@ -331,7 +320,7 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10 border-2 border-white dark:border-slate-800">
                     <AvatarImage
-                      src={session?.user?.image || undefined}
+                      src={session?.user?.profile_picture || undefined}
                       alt={session?.user?.name || "User"}
                       className="object-cover"
                     />
