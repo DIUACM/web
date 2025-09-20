@@ -26,20 +26,28 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 export function LoginForm() {
-  const { login } = useAuth();
+  const { login, ...auth } = useAuth();
   const router = useRouter();
   const search = useSearchParams();
-  const redirectTo = useMemo(() => search.get("redirect") || "/profile/edit", [search]);
+  const redirectOnSuccess = useMemo(() => search.get("redirect") || "/profile/edit", [search]);
+  const redirectIfAuthed = useMemo(() => search.get("redirect") || "/", [search]);
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { identifier: "", password: "" } });
+
+  // If already logged in, redirect away from login page
+  useEffect(() => {
+    if (!auth.loading && auth.session) {
+      router.replace(redirectIfAuthed);
+    }
+  }, [auth.loading, auth.session, redirectIfAuthed]);
 
   async function onSubmit(values: Values) {
     setSubmitting(true);
     try {
       await login(values);
       toast.success("Signed in successfully");
-      router.push(redirectTo);
+      router.push(redirectOnSuccess);
     } catch (err: any) {
       const msg = err?.body?.errors?.identifier?.[0] || err?.message || "Login failed";
       toast.error(msg);
